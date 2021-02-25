@@ -18,12 +18,16 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import com.example.androiddevchallenge.views.detail.DetailScreen
+import com.example.androiddevchallenge.views.home.HomeScreen
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,11 +40,21 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-// Start building your app here!
 @Composable
 fun MyApp() {
-    Surface(color = MaterialTheme.colors.background) {
-        Text(text = "Ready... Set... GO!")
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") {
+            HomeScreen(navController)
+        }
+        composable(
+            "detail/{dogId}",
+            arguments = listOf(navArgument("dogId") { type = NavType.IntType })
+        ) {
+            val dogId = it.arguments?.getInt("dogId") ?: 0
+            DetailScreen(dogId, navController)
+        }
     }
 }
 
